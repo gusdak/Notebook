@@ -1,2 +1,7 @@
 # Remove all untracked files and directories. (`-f` is `force`, `-d` is `remove directories`)
 git clean -fd
+
+# Delete old LFS files from local storage 
+#  (`-c` Contact the remote and check that copies of the files we would delete definitely exist before deleting;
+    `-v` Report the full detail of what is/would be deleted.)
+git lfs prune -cv
