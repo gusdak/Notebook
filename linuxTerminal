@@ -1,2 +1,2 @@
-1. mount -t tmpfs -o size=140G,mode=1777 overflow /tmp increase size of /tmp
-
+#increase size of /tmp
+mount -t tmpfs -o size=140G,mode=1777 overflow /tmp
