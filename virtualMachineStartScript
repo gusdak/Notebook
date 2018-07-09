@@ -1,0 +1,38 @@
+#!/bin/bash
+OPTS=""
+# Basic CPU settings.
+OPTS="$OPTS -cpu host,kvm=off,hv_spinlocks=0x1fff,hv_relaxed,hv_time,hv_vendor_id=Nvidia43FIX"
+OPTS="$OPTS -smp 8,sockets=1,cores=4,threads=2"
+# Enable KVM full virtualization support.
+OPTS="$OPTS -enable-kvm"
+# Assign memory to the vm.
+OPTS="$OPTS -m 10240"
+# VFIO GPU and GPU sound passthrough.
+OPTS="$OPTS -device vfio-pci,host=01:00.0,multifunction=on"
+OPTS="$OPTS -device vfio-pci,host=01:00.1"
+# Supply OVMF (general UEFI bios, needed for EFI boot support with GPT disks).
+OPTS="$OPTS -drive if=pflash,format=raw,readonly,file=/usr/share/edk2.git/ovmf-x64/OVMF_CODE-pure-efi.fd"
+OPTS="$OPTS -drive if=pflash,format=raw,file=$(pwd)/OVMF_VARS-pure-efi.fd"
+# Load our created VM image as a harddrive.
+OPTS="$OPTS -hda $(pwd)/qemu_drive.qcow2"
+# Load our OS setup image e.g. ISO file.
+#OPTS="$OPTS -cdrom $(pwd)/Win10_1803_English_x64.iso"
+# Use the following emulated video device (use none for disabled).
+OPTS="$OPTS -vga none"
+# Redirect QEMU's console input and output.
+OPTS="$OPTS -monitor stdio"
+# Passthrough USB devices.
+OPTS="$OPTS -usb"
+# USB mouse
+OPTS="$OPTS -device usb-host,hostbus=1,hostaddr=2"
+# USB keyboard
+OPTS="$OPTS -device usb-host,hostbus=1,hostaddr=3"
+# Emulate a sound device.
+OPTS="$OPTS -soundhw ac97"
+# Disabling HPET
+OPTS="$OPTS -no-hpet"
+
+VM_SOUND=""
+VM_SOUND="$VM_SOUND QEMU_AUDIO_DRV=alsa"
+xhost +
+sudo $VM_SOUND qemu-system-x86_64 $OPTS
